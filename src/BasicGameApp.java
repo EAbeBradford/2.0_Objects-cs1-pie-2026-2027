@@ -39,13 +39,17 @@ public class BasicGameApp implements Runnable {
    
 	public BufferStrategy bufferStrategy;
 	public Image astroPic;
+	public Image backgroundPic;
 
    //Declare the objects used in the program
    //These are things that are made up of more than one variable type
-	private Astronaut astro;
+	public Astronaut astro;
+	//todo: make a new astronaught called astro2
+	public Astronaut astro2;
 
+	public int randomNumber;
 
-   // Main method definition
+	// Main method definition
    // This is the code that runs first and automatically
 	public static void main(String[] args) {
 		BasicGameApp ex = new BasicGameApp();   //creates a new instance of the game
@@ -60,12 +64,20 @@ public class BasicGameApp implements Runnable {
 	public BasicGameApp() {
       
       setUpGraphics();
-       
+       randomNumber = (int)(Math.random() *10) +1;
       //variable and objects
       //create (construct) the objects needed for the game and load up 
 		astroPic = Toolkit.getDefaultToolkit().getImage("astronaut.png"); //load the picture
-		astro = new Astronaut(10,100);
+		backgroundPic = Toolkit.getDefaultToolkit().getImage("galaxy.jpg"); //load the picture
 
+		astro = new Astronaut(10,100);
+		astro2 = new Astronaut((int)(Math.random() *900), (int)(Math.random() * 600));
+		System.out.println(astro.dx);
+		astro.dx = 25;
+		astro2.dy = randomNumber;
+
+
+		//todo: give astro2 dy a random number between [1, 10]
 
 	}// BasicGameApp()
 
@@ -92,8 +104,19 @@ public class BasicGameApp implements Runnable {
 	public void moveThings()
 	{
       //calls the move( ) code in the objects
+		crashing();
 		astro.move();
+		astro2.move();
 
+	}
+
+	public void crashing(){
+		if(astro.hitbox.intersects(astro2.hitbox)){
+			System.out.println("crash");
+			astro.dx = -astro.dx;
+			astro2.dx = -astro2.dx;
+
+		}
 	}
 	
    //Pauses or sleeps the computer for the amount specified in milliseconds
@@ -142,10 +165,13 @@ public class BasicGameApp implements Runnable {
 		Graphics2D g = (Graphics2D) bufferStrategy.getDrawGraphics();
 		g.clearRect(0, 0, WIDTH, HEIGHT);
 		//start coding here
+		g.drawImage(backgroundPic, 0, 0, WIDTH, HEIGHT, null);
 
 
       //draw the image of the astronaut
 		g.drawImage(astroPic, astro.xpos, astro.ypos, astro.width, astro.height, null);
+		g.drawImage(astroPic, astro2.xpos, astro2.ypos, astro2.width, astro2.height, null);
+
 
 		//end coding here
 		g.dispose();
